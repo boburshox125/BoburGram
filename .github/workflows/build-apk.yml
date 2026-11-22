@@ -50,9 +50,18 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build APK
+      - name: Resolve Gradle dependencies (retry on network errors)
         run: |
           chmod +x gradlew
+          for i in 1 2 3 4 5; do
+            ./gradlew help --quiet && exit 0
+            echo "Dependency resolution failed (attempt $i), retrying in $((i*60))s..."
+            sleep $((i*60))
+          done
+          exit 1
+
+      - name: Build APK
+        run: |
           ./gradlew :TMessagesProj_AppStandalone:assembleAfatStandalone --stacktrace
 
       - name: Upload APK
