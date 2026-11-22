@@ -304,9 +304,11 @@ public class FileLoadOperation {
             maxDownloadRequests = 8;
             maxDownloadRequestsBig = 8;
         } else {
-            downloadChunkSizeBig = 1024 * 128;
-            maxDownloadRequests = 4;
-            maxDownloadRequestsBig = 4;
+            // BoburGram: always use the larger chunk size / parallelism the official client
+            // enables via getfileExperimentalParams (512 KB parts, 8 parallel requests).
+            downloadChunkSizeBig = 1024 * 512;
+            maxDownloadRequests = 8;
+            maxDownloadRequestsBig = 8;
         }
         if (isStory) {
             // On slow connections the first part of a visible story arrives sooner when parts are small.
